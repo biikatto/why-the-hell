@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class Weapon : MonoBehaviour{
@@ -10,7 +11,7 @@ public class Weapon : MonoBehaviour{
 		set{bullet = value;}
 	}
 	private BulletPattern selectedPattern;
-	public BulletPattern[] patternList;
+	public List<BulletPattern> patternList = new List<BulletPattern>();
 
 	private Control control;
 
@@ -18,17 +19,24 @@ public class Weapon : MonoBehaviour{
 		control = gameObject.GetComponent<Control>();
 		selectedPattern = gameObject.AddComponent<BulletPattern>();
 		selectedPattern.bullet = bullet;
+		patternList.Add(selectedPattern);
 	}
 
-	public void Fire(){
-		Fire(selectedPattern);
+	public void BeginFire(){
+		BeginFire(selectedPattern);
 	}
 
-	public void Fire(BulletPattern pattern){
+	public void BeginFire(BulletPattern pattern){
 		if(control.Player2){
-			pattern.Fire(true);
+			pattern.BeginFire(true);
 		}else{
-			pattern.Fire(false);
+			pattern.BeginFire(false);
+		}
+	}
+
+	public void EndFire(){
+		foreach(BulletPattern pattern in patternList){
+			pattern.EndFire();
 		}
 	}
 }
