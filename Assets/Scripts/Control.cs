@@ -56,10 +56,12 @@ public class Control : MonoBehaviour{
 		if(Input.GetButtonDown(inputList["Fire"] as string)){
 			// begin fire
 			weapon.BeginFire();
+			movement.Firing(true);
 		}
 		if(Input.GetButtonUp(inputList["Fire"] as string)){
 			// end fire
 			weapon.EndFire();
+			movement.Firing(false);
 		}
 	}
 }

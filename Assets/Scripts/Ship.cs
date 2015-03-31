@@ -65,7 +65,6 @@ public class Ship : MonoBehaviour{
 	}
 
 	public void BulletImpact(){
-		Debug.Log("impact");
 		HPManager.HP -= 1;
 		if(HPManager.HP <= 0){
 			Explode();
@@ -75,7 +74,6 @@ public class Ship : MonoBehaviour{
 	}
 
 	public void Explode(){
-		Debug.Log("Boom!");
 		Destroy(gameObject);
 	}
 }
