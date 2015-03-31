@@ -16,8 +16,8 @@ public class Bullet : MonoBehaviour{
 		if(other.gameObject.layer == 8){		// Ships layer
 			other.gameObject.GetComponent<Ship>().BulletImpact();
 		}
-		if(other.gameObject.layer == 10){       // Edges
-		    Destroy(gameObject);
+		if(other.gameObject.layer == 10){	// Screen
+			Destroy(gameObject);
 		}
 	}
 }
