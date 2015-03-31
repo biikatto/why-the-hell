@@ -58,10 +58,20 @@ public class Ship : MonoBehaviour{
 		}
 	}
 
+	public Rigidbody2D Rigidbody2D{
+	    get{
+			if(gameObject.GetComponent<Rigidbody2D>() == null){
+				rigidbody = gameObject.AddComponent<Rigidbody2D>() as Rigidbody2D;
+			}else{
+				rigidbody = gameObject.GetComponent<Rigidbody2D>() as Rigidbody2D;
+			}
+		    rigidbody.gravityScale = 0;
+			rigidbody.hideFlags = HideFlags.HideInInspector;
+			return rigidbody;
+		}
+	}
+
 	public void Start(){
-		rigidbody = gameObject.AddComponent<Rigidbody2D>();
-		rigidbody.gravityScale = 0;
-		rigidbody.hideFlags = HideFlags.HideInInspector;
 	}
 
 	public void BulletImpact(){
