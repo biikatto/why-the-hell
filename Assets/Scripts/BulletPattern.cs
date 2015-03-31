@@ -6,7 +6,15 @@ public class BulletPattern : MonoBehaviour{
 	[SerializeField]
 	public Bullet bullet;
 
+	private float bulletSpeed;
+	public float BulletSpeed{
+		get{return bulletSpeed;}
+		set{bulletSpeed = value;}
+	}
+
 	private bool firing;
+	private bool readyToFire;
+	private Coroutine fireCoroutine;
 	
 	private int patternNumber;
 	public int PatternNumber{
@@ -16,27 +24,43 @@ public class BulletPattern : MonoBehaviour{
 
 	public void Start(){
 		firing = false;
+		bulletSpeed = 6.3f;
+		readyToFire = true;
 	}
 
 	public void BeginFire(bool reversed){
-		StartCoroutine(Fire(reversed));
+		if(!firing){
+			fireCoroutine = StartCoroutine(Fire(reversed));
+		}
 	}
 
 	public void EndFire(){
-		firing = false;
+		if(firing){
+			StartCoroutine(Cooldown());
+			StopCoroutine(fireCoroutine);
+			firing = false;
+		}
+	}
+
+	private IEnumerator Cooldown(){
+		readyToFire = false;
+		yield return new WaitForSeconds(0.4f);
+		readyToFire = true;
 	}
 
 	private IEnumerator Fire(bool reversed){
 		float tau = 2*Mathf.PI;
 		float delay = 0.2f;
 		firing = true;
+		while(!readyToFire){
+			yield return new WaitForFixedUpdate();
+		}
 		while(firing){
 			switch(patternNumber){
 				default:
 					int nBullets = 8;
 					float angleWidth = 1.0f;
 					float mag = 1.0f;
-					float bulletSpeed = 4.0f;
 					float offset = 0.075f;
 					if(reversed){
 						offset += 0.5f;
