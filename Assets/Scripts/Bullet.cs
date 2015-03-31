@@ -12,7 +12,6 @@ public class Bullet : MonoBehaviour{
 	}
 
 	public void OnTriggerEnter2D(Collider2D other){
-	    Debug.Log(other.gameObject.layer);
 		if(other.gameObject.layer == 8){		// Ships layer
 			other.gameObject.GetComponent<Ship>().BulletImpact();
 		}
