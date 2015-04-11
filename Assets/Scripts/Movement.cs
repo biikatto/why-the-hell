@@ -5,6 +5,13 @@ using System.Collections;
 public class Movement : MonoBehaviour{
 	public bool player2;
 	public bool firing;
+
+	private bool constrainNorth;
+	private bool constrainSouth;
+	private bool constrainEast;
+	private bool constrainWest;
+
+	private new Rigidbody2D rigidbody;
 	
 	[SerializeField]
 	private float movementSpeed = 1.0f;
@@ -22,20 +29,76 @@ public class Movement : MonoBehaviour{
 
     public void Start(){
         firing = false;
+        rigidbody = gameObject.GetComponent<Ship>().Rigidbody2D;
     }
 
     public void Firing(bool newFiring){
         firing = newFiring;
     }
 
-    public void Move(Vector3 movementVector){
+    public void Move(Vector2 movementVector){
+        movementVector = ConstrainDirections(movementVector);
     	if(firing){
-    	movementVector = transform.position +
+    	movementVector = rigidbody.position +
     		(movementVector * movementSpeed * slowFactor * Time.deltaTime);
     	}else{
-    	movementVector = transform.position +
+    	movementVector = rigidbody.position +
     		(movementVector * movementSpeed * Time.deltaTime);
     	}
-    	transform.position = movementVector;
+    	rigidbody.position = movementVector;
+    }
+
+    public void Update(){
+    }
+
+    public void OnTriggerEnter2D(Collider2D collision){
+        Debug.Log("pubup");
+        if(collision.gameObject.layer == 10){
+            if(collision.gameObject.name == "North"){
+                constrainNorth = true;
+            }
+            if(collision.gameObject.name == "South"){
+                constrainSouth = true;
+            }
+            if(collision.gameObject.name == "East"){
+                constrainEast = true;
+            }
+            if(collision.gameObject.name == "West"){
+                constrainWest = true;
+            }
+        }
+    }
+
+    public void OnTriggerExit2D(Collider2D collision){
+        if(collision.gameObject.layer == 10){
+            if(collision.gameObject.name == "North"){
+                constrainNorth = false;
+            }
+            if(collision.gameObject.name == "South"){
+                constrainSouth = false;
+            }
+            if(collision.gameObject.name == "East"){
+                constrainEast = false;
+            }
+            if(collision.gameObject.name == "West"){
+                constrainWest = false;
+            }
+        }
+    }
+
+    private Vector2 ConstrainDirections(Vector2 vector){
+        if(constrainNorth){
+            vector.y = Mathf.Min(vector.y, 0);
+        }
+        if(constrainSouth){
+            vector.y = Mathf.Max(vector.y, 0);
+        }
+        if(constrainWest){
+            vector.x = Mathf.Max(vector.x, 0);
+        }
+        if(constrainEast){
+            vector.x = Mathf.Min(vector.x, 0);
+        }
+        return vector;
     }
 }

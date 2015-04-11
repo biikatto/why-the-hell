@@ -39,18 +39,18 @@ public class Control : MonoBehaviour{
 	public void Update(){
 		if(Input.GetAxis(inputList["Horizontal"] as string) > 0){
 			// move right
-			movement.Move(Vector3.right);
+			movement.Move(Vector2.right);
 		}else if (Input.GetAxis(inputList["Horizontal"] as string) < 0){
 			// move left
-			movement.Move(Vector3.left);
+			movement.Move(Vector2.right * -1);
 		}
 
 		if(Input.GetAxis(inputList["Vertical"] as string) > 0){
 			// move up
-			movement.Move(Vector3.up);
+			movement.Move(Vector2.up);
 		}else if(Input.GetAxis(inputList["Vertical"] as string) < 0){
 			// move down
-			movement.Move(Vector3.down);
+			movement.Move(Vector2.up * -1);
 		}
 
 		if(Input.GetButtonDown(inputList["Fire"] as string)){
