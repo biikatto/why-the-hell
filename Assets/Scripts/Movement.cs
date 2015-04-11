@@ -52,7 +52,6 @@ public class Movement : MonoBehaviour{
     }
 
     public void OnTriggerEnter2D(Collider2D collision){
-        Debug.Log("pubup");
         if(collision.gameObject.layer == 10){
             if(collision.gameObject.name == "North"){
                 constrainNorth = true;
