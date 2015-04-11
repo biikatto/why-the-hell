@@ -15,6 +15,10 @@ public class BulletPattern : MonoBehaviour{
 	private bool firing;
 	private bool readyToFire;
 	private Coroutine fireCoroutine;
+	private Coroutine cooldownCoroutine;
+
+	private float cooldownTime = 0f;
+	private float cooldownDuration = 0.4f;
 	
 	private int patternNumber;
 	public int PatternNumber{
@@ -29,16 +33,22 @@ public class BulletPattern : MonoBehaviour{
 	}
 
 	public void BeginFire(bool reversed){
-		if(!firing){
-			fireCoroutine = StartCoroutine(Fire(reversed));
+		if(Time.time >= cooldownTime){
+		// if(!firing){
+		 	firing = true;
+		 	fireCoroutine = StartCoroutine(Fire(reversed));
+		// 	if(cooldownCoroutine != null){
+		// 		StopCoroutine(cooldownCoroutine);
+		// 	}
 		}
 	}
 
 	public void EndFire(){
 		if(firing){
-			StartCoroutine(Cooldown());
 			StopCoroutine(fireCoroutine);
+			cooldownTime = Time.time + cooldownDuration;
 			firing = false;
+		//	cooldownCoroutine = StartCoroutine(Cooldown());
 		}
 	}
 
@@ -46,12 +56,12 @@ public class BulletPattern : MonoBehaviour{
 		readyToFire = false;
 		yield return new WaitForSeconds(0.4f);
 		readyToFire = true;
+		firing = false;
 	}
 
 	private IEnumerator Fire(bool reversed){
 		float tau = 2*Mathf.PI;
 		float delay = 0.2f;
-		firing = true;
 		while(!readyToFire){
 			yield return new WaitForFixedUpdate();
 		}
