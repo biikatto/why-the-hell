@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
 [System.Serializable]
 public class Weapon : MonoBehaviour{
@@ -10,33 +9,80 @@ public class Weapon : MonoBehaviour{
 		get{return bullet;}
 		set{bullet = value;}
 	}
-	private BulletPattern selectedPattern;
-	public List<BulletPattern> patternList = new List<BulletPattern>();
 
 	private Control control;
 
+	private float bulletSpeed;
+	public float BulletSpeed{
+		get{return bulletSpeed;}
+		set{bulletSpeed = value;}
+	}
+
+	private bool firing;
+	private bool readyToFire;
+	
+	private int patternNumber;
+	public int PatternNumber{
+		get{return patternNumber;}
+		set{patternNumber = value;}
+	}
+
+	private BulletPattern sinPattern;
+	private BulletPattern spiralPattern;
+
 	public void Start(){
-		control = gameObject.GetComponent<Control>();
-		selectedPattern = gameObject.AddComponent<BulletPattern>();
-		selectedPattern.bullet = bullet;
-		patternList.Add(selectedPattern);
+		firing = false;
+		bulletSpeed = 6.3f;
+		readyToFire = true;
+		patternNumber = 1;
+
+		sinPattern = gameObject.AddComponent<SinPattern>();
+		sinPattern.bulletSpeed = bulletSpeed;
+		sinPattern.bullet = bullet;
+
+		spiralPattern = gameObject.AddComponent<SpiralPattern>();
+		spiralPattern.bulletSpeed = bulletSpeed;
+		spiralPattern.bullet = bullet;
 	}
 
 	public void BeginFire(){
-		BeginFire(selectedPattern);
-	}
-
-	public void BeginFire(BulletPattern pattern){
-		if(control.Player2){
-			pattern.BeginFire(true);
-		}else{
-			pattern.BeginFire(false);
-		}
+		firing = true;
+		bool reversed = true;
+		StartCoroutine(Fire(reversed));
 	}
 
 	public void EndFire(){
-		foreach(BulletPattern pattern in patternList){
-			pattern.EndFire();
+		if(firing){
+			firing = false;
+			StartCoroutine(Cooldown());
 		}
+	}
+
+	private IEnumerator Cooldown(){
+		readyToFire = false;
+		yield return new WaitForSeconds(0.4f);
+		readyToFire = true;
+	}
+
+	private IEnumerator Fire(bool reversed){
+		sinPattern.reversed = reversed;
+		spiralPattern.reversed = reversed;
+		Coroutine patternCoroutine = null;
+		while(!readyToFire){
+			yield return new WaitForFixedUpdate();
+		}
+		switch(patternNumber){
+			case 0:
+				patternCoroutine = StartCoroutine(sinPattern.Fire());
+				break;
+
+			default:
+				patternCoroutine = StartCoroutine(spiralPattern.Fire());
+				break;
+		}
+		while(firing){
+			yield return new WaitForFixedUpdate();
+		}
+		StopCoroutine(patternCoroutine);
 	}
 }

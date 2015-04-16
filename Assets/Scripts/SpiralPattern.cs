@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class SimpleSpiral : PatternVariation{
+public class SpiralPattern : BulletPattern{
 	
 	private int nBullets = 8;
 	private float mag = 1.0f;

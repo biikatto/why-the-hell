@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class SinPattern : PatternVariation{
+public class SinPattern : BulletPattern{
 	
 	private int nBullets = 8;
 	private float mag = 1.0f;
