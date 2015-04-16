@@ -1,0 +1,2 @@
+-write bullet patterns into subclasses instead of having them kludged into BulletPattern.cs
+-write editors for those pattern subclasses
