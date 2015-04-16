@@ -14,11 +14,6 @@ public class BulletPattern : MonoBehaviour{
 
 	private bool firing;
 	private bool readyToFire;
-	private Coroutine fireCoroutine;
-	private Coroutine cooldownCoroutine;
-
-	private float cooldownTime = 0f;
-	private float cooldownDuration = 0.4f;
 
 	private float TAU;
 	
@@ -42,21 +37,14 @@ public class BulletPattern : MonoBehaviour{
 	}
 
 	public void BeginFire(bool reversed){
-	//	if(Time.time >= cooldownTime){
-		// if(!firing){
 		firing = true;
-		fireCoroutine = StartCoroutine(Fire(reversed));
-		// 	if(cooldownCoroutine != null){
-		// 		StopCoroutine(cooldownCoroutine);
-		// 	}
-	//	}
+		StartCoroutine(Fire(reversed));
 	}
 
 	public void EndFire(){
 		if(firing){
-			cooldownTime = Time.time + cooldownDuration;
 			firing = false;
-			cooldownCoroutine = StartCoroutine(Cooldown());
+			StartCoroutine(Cooldown());
 		}
 	}
 
@@ -68,7 +56,6 @@ public class BulletPattern : MonoBehaviour{
 
 	private IEnumerator Fire(bool reversed){
 		pattern.reversed = reversed;
-		float delay = 0.2f;
 		Coroutine patternCoroutine = null;
 		while(!readyToFire){
 			yield return new WaitForFixedUpdate();
@@ -88,7 +75,6 @@ public class BulletPattern : MonoBehaviour{
 			yield return new WaitForFixedUpdate();
 		}
 		StopCoroutine(patternCoroutine);
-		//yield return new WaitForSeconds(delay);
 	}
 
 	private IEnumerator BasicPattern(bool reversed){
@@ -115,42 +101,6 @@ public class BulletPattern : MonoBehaviour{
 				thisBullet.velocity = bulletPosition.normalized * bulletSpeed;
 			}
 			offset += 0.01625f;
-			yield return new WaitForSeconds(0.2f);
-		}
-	}
-
-	private IEnumerator SinPattern(bool reversed){
-		int nBullets = 8;
-		// float angleWidth = 1.0f;
-		float mag = 1.0f;
-		float offset = 0.075f;
-		float sinWidth = 0.25f;
-		float sinFreq = 2f;
-		float rotationSpeed = 1f;
-		if(reversed){
-			offset += 0.5f;
-		}
-		while(true){
-			for(int i=0;i<nBullets;i++){
-				// float theta = (((float)i/nBullets) *
-				// 		TAU*angleWidth) +
-				// 		(Mathf.Sin(TAU*offset) * sinWidth);
-				// float theta = (((float)i/nBullets) *
-				// 		TAU*angleWidth) +
-				// 		TAU*offset;
-				float theta = ((float)i/nBullets) * TAU;
-				Vector3 bulletPosition = new Vector3(
-						Mathf.Sin(theta)*mag, Mathf.Cos(theta)*mag, 0);
-				Bullet thisBullet = GameObject.Instantiate(
-						bullet,
-						(bulletPosition + transform.position),
-						Quaternion.identity) as Bullet;
-				thisBullet.velocity = bulletPosition.normalized * bulletSpeed;
-				thisBullet.sinPattern = true;
-				thisBullet.sinWidth = sinWidth;
-				thisBullet.sinFreq = sinFreq;
-			}
-			offset += 0.0325f * rotationSpeed;
 			yield return new WaitForSeconds(0.2f);
 		}
 	}
