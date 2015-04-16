@@ -45,10 +45,7 @@ public class Movement : MonoBehaviour{
     	movementVector = rigidbody.position +
     		(movementVector * movementSpeed * Time.deltaTime);
     	}
-    	rigidbody.position = movementVector;
-    }
-
-    public void Update(){
+    	transform.position = movementVector;
     }
 
     public void OnTriggerEnter2D(Collider2D collision){

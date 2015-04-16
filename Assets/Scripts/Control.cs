@@ -36,7 +36,7 @@ public class Control : MonoBehaviour{
     	}
     }
 
-	public void Update(){
+	public void LateUpdate(){
 		Vector2 movementVector = new Vector2();
 		if(Input.GetAxis(inputList["Horizontal"] as string) > 0){
 			// move right
