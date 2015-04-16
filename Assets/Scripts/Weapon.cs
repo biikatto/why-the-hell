@@ -29,6 +29,7 @@ public class Weapon : MonoBehaviour{
 
 	private BulletPattern sinPattern;
 	private BulletPattern spiralPattern;
+	private BulletPattern eightLinePattern;
 
 	public void Start(){
 		firing = false;
@@ -43,6 +44,10 @@ public class Weapon : MonoBehaviour{
 		spiralPattern = gameObject.AddComponent<SpiralPattern>();
 		spiralPattern.bulletSpeed = bulletSpeed;
 		spiralPattern.bullet = bullet;
+
+		eightLinePattern = gameObject.AddComponent<EightLinePattern>();
+		eightLinePattern.bulletSpeed = bulletSpeed;
+		eightLinePattern.bullet = bullet;
 	}
 
 	public void BeginFire(){
@@ -75,6 +80,10 @@ public class Weapon : MonoBehaviour{
 			case 0:
 				patternCoroutine = StartCoroutine(sinPattern.Fire());
 				break;
+
+			case 1:
+			    patternCoroutine = StartCoroutine(eightLinePattern.Fire());
+			    break;
 
 			default:
 				patternCoroutine = StartCoroutine(spiralPattern.Fire());
