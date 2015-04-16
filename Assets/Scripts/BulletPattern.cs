@@ -23,17 +23,23 @@ public class BulletPattern : MonoBehaviour{
 		set{patternNumber = value;}
 	}
 
-	private PatternVariation pattern;
+	private PatternVariation sinPattern;
+	private PatternVariation swirlPattern;
 
 	public void Start(){
 		TAU = 2*Mathf.PI;
 		firing = false;
 		bulletSpeed = 6.3f;
 		readyToFire = true;
-		patternNumber = 0;
-		pattern = gameObject.AddComponent<SinPattern>();
-		pattern.bulletSpeed = bulletSpeed;
-		pattern.bullet = bullet;
+		patternNumber = 1;
+
+		sinPattern = gameObject.AddComponent<SinPattern>();
+		sinPattern.bulletSpeed = bulletSpeed;
+		sinPattern.bullet = bullet;
+
+		swirlPattern = gameObject.AddComponent<SimpleSpiral>();
+		swirlPattern.bulletSpeed = bulletSpeed;
+		swirlPattern.bullet = bullet;
 	}
 
 	public void BeginFire(bool reversed){
@@ -55,20 +61,19 @@ public class BulletPattern : MonoBehaviour{
 	}
 
 	private IEnumerator Fire(bool reversed){
-		pattern.reversed = reversed;
+		sinPattern.reversed = reversed;
+		swirlPattern.reversed = reversed;
 		Coroutine patternCoroutine = null;
 		while(!readyToFire){
 			yield return new WaitForFixedUpdate();
 		}
 		switch(patternNumber){
 			case 0:
-				Debug.Log("sin");
-				patternCoroutine = StartCoroutine(pattern.Fire());
+				patternCoroutine = StartCoroutine(sinPattern.Fire());
 				break;
 
 			default:
-				Debug.Log("spiral");
-				patternCoroutine = StartCoroutine(BasicPattern(reversed));
+				patternCoroutine = StartCoroutine(swirlPattern.Fire());
 				break;
 		}
 		while(firing){
