@@ -20,7 +20,7 @@ public class BulletPattern : MonoBehaviour{
 	private float cooldownTime = 0f;
 	private float cooldownDuration = 0.4f;
 
-	private float tau;
+	private float TAU;
 	
 	private int patternNumber;
 	public int PatternNumber{
@@ -28,31 +28,35 @@ public class BulletPattern : MonoBehaviour{
 		set{patternNumber = value;}
 	}
 
+	private PatternVariation pattern;
+
 	public void Start(){
-		tau = 2*Mathf.PI;
+		TAU = 2*Mathf.PI;
 		firing = false;
 		bulletSpeed = 6.3f;
 		readyToFire = true;
 		patternNumber = 0;
+		pattern = gameObject.AddComponent<SinPattern>();
+		pattern.bulletSpeed = bulletSpeed;
+		pattern.bullet = bullet;
 	}
 
 	public void BeginFire(bool reversed){
-		if(Time.time >= cooldownTime){
+	//	if(Time.time >= cooldownTime){
 		// if(!firing){
-		 	firing = true;
-		 	fireCoroutine = StartCoroutine(Fire(reversed));
+		firing = true;
+		fireCoroutine = StartCoroutine(Fire(reversed));
 		// 	if(cooldownCoroutine != null){
 		// 		StopCoroutine(cooldownCoroutine);
 		// 	}
-		}
+	//	}
 	}
 
 	public void EndFire(){
 		if(firing){
-			StopCoroutine(fireCoroutine);
 			cooldownTime = Time.time + cooldownDuration;
 			firing = false;
-		//	cooldownCoroutine = StartCoroutine(Cooldown());
+			cooldownCoroutine = StartCoroutine(Cooldown());
 		}
 	}
 
@@ -60,10 +64,10 @@ public class BulletPattern : MonoBehaviour{
 		readyToFire = false;
 		yield return new WaitForSeconds(0.4f);
 		readyToFire = true;
-		firing = false;
 	}
 
 	private IEnumerator Fire(bool reversed){
+		pattern.reversed = reversed;
 		float delay = 0.2f;
 		Coroutine patternCoroutine = null;
 		while(!readyToFire){
@@ -72,7 +76,7 @@ public class BulletPattern : MonoBehaviour{
 		switch(patternNumber){
 			case 0:
 				Debug.Log("sin");
-				patternCoroutine = StartCoroutine(SinPattern(reversed));
+				patternCoroutine = StartCoroutine(pattern.Fire());
 				break;
 
 			default:
@@ -80,11 +84,11 @@ public class BulletPattern : MonoBehaviour{
 				patternCoroutine = StartCoroutine(BasicPattern(reversed));
 				break;
 		}
-		yield return new WaitForSeconds(delay);
 		while(firing){
 			yield return new WaitForFixedUpdate();
 		}
 		StopCoroutine(patternCoroutine);
+		//yield return new WaitForSeconds(delay);
 	}
 
 	private IEnumerator BasicPattern(bool reversed){
@@ -95,11 +99,11 @@ public class BulletPattern : MonoBehaviour{
 		if(reversed){
 			offset += 0.5f;
 		}
-		while(firing){
+		while(true){
 			for(int i=0;i<nBullets;i++){
 				float theta = (((float)i/nBullets) *
-						tau*angleWidth) +
-					tau*offset;
+						TAU*angleWidth) +
+					TAU*offset;
 				Vector3 bulletPosition = new Vector3(
 						Mathf.Sin(theta)*mag, Mathf.Cos(theta)*mag, 0);
 
@@ -117,7 +121,7 @@ public class BulletPattern : MonoBehaviour{
 
 	private IEnumerator SinPattern(bool reversed){
 		int nBullets = 8;
-		float angleWidth = 1.0f;
+		// float angleWidth = 1.0f;
 		float mag = 1.0f;
 		float offset = 0.075f;
 		float sinWidth = 0.25f;
@@ -126,15 +130,15 @@ public class BulletPattern : MonoBehaviour{
 		if(reversed){
 			offset += 0.5f;
 		}
-		while(firing){
+		while(true){
 			for(int i=0;i<nBullets;i++){
 				// float theta = (((float)i/nBullets) *
-				// 		tau*angleWidth) +
-				// 		(Mathf.Sin(tau*offset) * sinWidth);
+				// 		TAU*angleWidth) +
+				// 		(Mathf.Sin(TAU*offset) * sinWidth);
 				// float theta = (((float)i/nBullets) *
-				// 		tau*angleWidth) +
-				// 		tau*offset;
-				float theta = ((float)i/nBullets) * tau;
+				// 		TAU*angleWidth) +
+				// 		TAU*offset;
+				float theta = ((float)i/nBullets) * TAU;
 				Vector3 bulletPosition = new Vector3(
 						Mathf.Sin(theta)*mag, Mathf.Cos(theta)*mag, 0);
 				Bullet thisBullet = GameObject.Instantiate(
