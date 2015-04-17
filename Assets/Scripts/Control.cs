@@ -19,14 +19,24 @@ public class Control : MonoBehaviour{
 
     private Hashtable inputList;
 
+    private bool reversed;
+
     public void Start(){
     	movement = gameObject.GetComponent<Ship>().Movement;
     	weapon = gameObject.GetComponent<Ship>().Weapon;
+
+    	if(player2){
+    	    reversed = true;
+    	}else{
+    	    reversed = false;
+    	}
 
     	inputList = new Hashtable();
     	inputList.Add("Horizontal", "Horizontal");
     	inputList.Add("Vertical", "Vertical");
     	inputList.Add("Fire", "Fire");
+    	inputList.Add("Increment Pattern", "Increment Pattern");
+    	inputList.Add("Decrement Pattern", "Decrement Pattern");
     	foreach(string key in ((Hashtable)inputList.Clone()).Keys){
     		if(player2){
     			inputList[key] = inputList[key] + " P2";
@@ -57,13 +67,22 @@ public class Control : MonoBehaviour{
 
 		if(Input.GetButtonDown(inputList["Fire"] as string)){
 			// begin fire
-			weapon.BeginFire();
+			weapon.BeginFire(reversed);
 			movement.Firing(true);
 		}
 		if(Input.GetButtonUp(inputList["Fire"] as string)){
 			// end fire
 			weapon.EndFire();
 			movement.Firing(false);
+		}
+
+		if(Input.GetButtonDown(inputList["Increment Pattern"] as string)){
+		    // increment pattern
+		    weapon.PatternNumber = weapon.PatternNumber + 1;
+		}
+		if(Input.GetButtonDown(inputList["Decrement Pattern"] as string)){
+		    // decrement Pattern
+		    weapon.PatternNumber = weapon.PatternNumber - 1;
 		}
 	}
 }
