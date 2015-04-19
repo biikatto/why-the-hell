@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class Weapon : MonoBehaviour{
@@ -19,7 +20,11 @@ public class Weapon : MonoBehaviour{
 	}
 
 	private bool firing;
+	public bool Firing{
+		get{return firing;}
+	}
 	private bool readyToFire;
+	private int buttonsDown;
 	
 	private int patternNumber;
 	public int PatternNumber{
@@ -32,40 +37,57 @@ public class Weapon : MonoBehaviour{
 	private BulletPattern eightLinePattern;
 	private BulletPattern threeByFivePattern;
 
+	private List<BulletPattern> patterns;
+
+	private Coroutine patternCoroutine;
+
 	public void Start(){
 		firing = false;
 		bulletSpeed = 6.3f;
 		readyToFire = true;
+		buttonsDown = 0;
 		patternNumber = 2;
 
-		sinPattern = gameObject.AddComponent<SinPattern>();
-		sinPattern.bulletSpeed = bulletSpeed;
-		sinPattern.bullet = bullet;
+		patterns = new List<BulletPattern>();
 
-		spiralPattern = gameObject.AddComponent<SpiralPattern>();
-		spiralPattern.bulletSpeed = bulletSpeed;
-		spiralPattern.bullet = bullet;
+		patterns.Add(gameObject.AddComponent<SinPattern>());
+		patterns[0].bulletSpeed = bulletSpeed;
+		patterns[0].bullet = bullet;
 
-		eightLinePattern = gameObject.AddComponent<EightLinePattern>();
-		eightLinePattern.bulletSpeed = bulletSpeed;
-		eightLinePattern.bullet = bullet;
+		patterns.Add(gameObject.AddComponent<SpiralPattern>());
+		patterns[1].bulletSpeed = bulletSpeed;
+		patterns[1].bullet = bullet;
 
-		threeByFivePattern = gameObject.AddComponent<ThreeByFivePattern>();
-		threeByFivePattern.bulletSpeed = bulletSpeed;
-		threeByFivePattern.bullet = bullet;
+		patterns.Add(gameObject.AddComponent<EightLinePattern>());
+		patterns[2].bulletSpeed = bulletSpeed;
+		patterns[2].bullet = bullet;
+
+		patterns.Add(gameObject.AddComponent<ThreeByFivePattern>());
+		patterns[3].bulletSpeed = bulletSpeed;
+		patterns[3].bullet = bullet;
 	}
 
-	public void BeginFire(){
+	public void BeginFire(int which){
+		buttonsDown++;
+		if(firing){
+			_EndFire();
+		}
 		firing = true;
 		bool reversed = true;
-		StartCoroutine(Fire(reversed));
+		StartCoroutine(Fire(which, reversed));
 	}
 
 	public void EndFire(){
-		if(firing){
-			firing = false;
-			StartCoroutine(Cooldown());
+		buttonsDown--;
+		if((buttonsDown == 0) && firing){
+			_EndFire();
 		}
+	}
+
+	private void _EndFire(){
+		firing = false;
+		StopCoroutine(patternCoroutine);
+		StartCoroutine(Cooldown());
 	}
 
 	private IEnumerator Cooldown(){
@@ -74,30 +96,13 @@ public class Weapon : MonoBehaviour{
 		readyToFire = true;
 	}
 
-	private IEnumerator Fire(bool reversed){
-		sinPattern.reversed = reversed;
-		spiralPattern.reversed = reversed;
-		Coroutine patternCoroutine = null;
+	private IEnumerator Fire(int which, bool reversed){
+		BulletPattern pattern = patterns[which];
+		pattern.reversed = reversed;
 		while(!readyToFire){
 			yield return new WaitForFixedUpdate();
 		}
-		switch(patternNumber){
-			case 0:
-				patternCoroutine = StartCoroutine(sinPattern.Fire());
-				break;
-
-			case 1:
-			    patternCoroutine = StartCoroutine(eightLinePattern.Fire());
-			    break;
-
-			case 2:
-			    patternCoroutine = StartCoroutine(threeByFivePattern.Fire());
-			    break;
-
-			default:
-				patternCoroutine = StartCoroutine(spiralPattern.Fire());
-				break;
-		}
+		patternCoroutine = StartCoroutine(pattern.Fire());
 		while(firing){
 			yield return new WaitForFixedUpdate();
 		}

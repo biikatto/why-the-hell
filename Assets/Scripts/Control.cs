@@ -26,7 +26,9 @@ public class Control : MonoBehaviour{
     	inputList = new Hashtable();
     	inputList.Add("Horizontal", "Horizontal");
     	inputList.Add("Vertical", "Vertical");
-    	inputList.Add("Fire", "Fire");
+    	for(int i=0;i<4;i++){
+    		inputList.Add("Fire "+(i+1), "Fire "+(i+1));
+    	}
     	foreach(string key in ((Hashtable)inputList.Clone()).Keys){
     		if(player2){
     			inputList[key] = inputList[key] + " P2";
@@ -55,15 +57,17 @@ public class Control : MonoBehaviour{
 		}
 		movement.Move(movementVector.normalized);
 
-		if(Input.GetButtonDown(inputList["Fire"] as string)){
-			// begin fire
-			weapon.BeginFire();
-			movement.Firing(true);
-		}
-		if(Input.GetButtonUp(inputList["Fire"] as string)){
-			// end fire
-			weapon.EndFire();
-			movement.Firing(false);
+		for(int i=0;i<4;i++){
+			if(Input.GetButtonDown(inputList["Fire "+(i+1)] as string)){
+				// begin fire
+				weapon.BeginFire(i);
+				movement.Firing(weapon.Firing);
+			}
+			if(Input.GetButtonUp(inputList["Fire "+(i+1)] as string)){
+				// end fire
+				weapon.EndFire();
+				movement.Firing(weapon.Firing);
+			}
 		}
 	}
 }
