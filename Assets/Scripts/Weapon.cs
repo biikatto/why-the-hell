@@ -67,13 +67,13 @@ public class Weapon : MonoBehaviour{
 		patterns[3].bullet = bullet;
 	}
 
-	public void BeginFire(int which){
+	public void BeginFire(int which, bool reversed){
+		Debug.Log(reversed);
 		buttonsDown++;
 		if(firing){
 			_EndFire();
 		}
 		firing = true;
-		bool reversed = true;
 		StartCoroutine(Fire(which, reversed));
 	}
 

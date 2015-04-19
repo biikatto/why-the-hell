@@ -13,7 +13,7 @@ public class ThreeByFivePattern : BulletPattern{
 	
 	public override IEnumerator Fire(){
 	    if(reversed){
-	        offset += 0.5f;
+	        offset = 0.75f;
 	    }
 		while(true){
 			for(int i=0;i<nGroups;i++){
