@@ -18,6 +18,7 @@ public class Ship : MonoBehaviour{
 				hpManager = gameObject.GetComponent<HPManager>() as HPManager;
 			}
 			hpManager.hideFlags = HideFlags.HideInInspector;
+			hpManager.Player2 = Control.Player2;
 			return hpManager;
 		}
 	}
@@ -84,6 +85,14 @@ public class Ship : MonoBehaviour{
 	}
 
 	public void Explode(){
-		Destroy(gameObject);
+		StartCoroutine("ResetLevel");
+		transform.position = new Vector3(1000,1000,0);
+	}
+
+	private IEnumerator ResetLevel(){
+		Debug.Log("Resetting...");
+		yield return new WaitForSeconds(3);
+		Debug.Log("Reset");
+		Application.LoadLevel("Game");
 	}
 }
