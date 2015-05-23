@@ -11,11 +11,14 @@ public class Bullet : MonoBehaviour{
 	private Vector3 sinVector;
 	private Vector3 centerPosition;
 
+	private float distanceTraveled;
+
 	public void Start(){
 		phase = 0f;
 		sinVector = new Vector3();
 
 		centerPosition = transform.position;
+		distanceTraveled = 0f;
 	}
 
 	public void Update(){
@@ -26,8 +29,13 @@ public class Bullet : MonoBehaviour{
 			sinVector *= Mathf.Sin(phase) * sinWidth;
 
 			centerPosition = centerPosition + (velocity * Time.deltaTime);
+			distanceTraveled += (velocity.magnitude * Time.deltaTime);
 			transform.position = centerPosition + sinVector;
 			phase += Time.deltaTime * sinFreq;
+
+			sinWidth += distanceTraveled * 0.00005f;
+			sinFreq += distanceTraveled * 0.0015f;
+
 		}else{
 			transform.position = transform.position + (velocity * Time.deltaTime);
 		}
