@@ -60,7 +60,7 @@ public class Weapon : MonoBehaviour{
 		patterns[1].bulletSpeed = bulletSpeed;
 		patterns[1].bullet = bullet;
 
-		patterns.Add(gameObject.AddComponent<EightLinePattern>());
+		patterns.Add(gameObject.AddComponent<RingPattern>());
 		patterns[2].bulletSpeed = bulletSpeed;
 		patterns[2].bullet = bullet;
 
