@@ -57,12 +57,20 @@ public class Control : MonoBehaviour{
 		}
 		movement.Move(movementVector.normalized);
 
+		int buttonsDownThisFrame = 0;
 		for(int i=0;i<4;i++){
 			if(Input.GetButtonDown(inputList["Fire "+(i+1)] as string)){
 				// begin fire
 				weapon.BeginFire(i);
 				movement.Firing(weapon.Firing);
+				buttonsDownThisFrame++;
+				continue;
 			}
+		}
+		if(buttonsDownThisFrame > 1){
+			Debug.Log(buttonsDownThisFrame);
+		}
+		for(int i=0;i<4;i++){
 			if(Input.GetButtonUp(inputList["Fire "+(i+1)] as string)){
 				// end fire
 				weapon.EndFire();

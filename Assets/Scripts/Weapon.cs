@@ -39,6 +39,7 @@ public class Weapon : MonoBehaviour{
 
 	private List<BulletPattern> patterns;
 
+	private List<Coroutine> patternCoroutines;
 	private Coroutine patternCoroutine;
 
 	public void Start(){
@@ -49,6 +50,7 @@ public class Weapon : MonoBehaviour{
 		patternNumber = 2;
 
 		patterns = new List<BulletPattern>();
+		patternCoroutines = new List<Coroutine>();
 
 		patterns.Add(gameObject.AddComponent<SinPattern>());
 		patterns[0].bulletSpeed = bulletSpeed;
@@ -78,15 +80,20 @@ public class Weapon : MonoBehaviour{
 	}
 
 	public void EndFire(){
+		Debug.Log("EndFire()");
 		buttonsDown--;
-		if((buttonsDown == 0) && firing){
+		if((buttonsDown == 0)/* && firing*/){
+			firing = false;
 			_EndFire();
 		}
 	}
 
 	private void _EndFire(){
-		firing = false;
-		StopCoroutine(patternCoroutine);
+		for(int i=patternCoroutines.Count-1;i>=0;i--){
+			StopCoroutine(patternCoroutines[i]);
+			patternCoroutines.Remove(patternCoroutines[i]);
+		}
+		Debug.Log("_EndFire() "+ patternCoroutines.Count.ToString());
 		StartCoroutine(Cooldown());
 	}
 
@@ -102,10 +109,19 @@ public class Weapon : MonoBehaviour{
 		while(!readyToFire){
 			yield return new WaitForFixedUpdate();
 		}
-		patternCoroutine = StartCoroutine(pattern.Fire());
+		// fix this to not be hardcoded later
+		if(patternCoroutines.Count == 0){
+			patternCoroutines.Add(StartCoroutine(pattern.Fire()));
+		}
 		while(firing){
 			yield return new WaitForFixedUpdate();
 		}
-		StopCoroutine(patternCoroutine);
+		if(patternCoroutines.Count > 0){
+			StopCoroutine(patternCoroutines[patternCoroutines.Count-1]);
+			patternCoroutines.Remove(patternCoroutines[patternCoroutines.Count-1]);
+		}
+	}
+
+	public void Update(){
 	}
 }
