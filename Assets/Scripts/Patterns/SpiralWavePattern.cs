@@ -16,11 +16,10 @@ public class SpiralWavePattern : BulletPattern{
 		while(true){
 		    for(int i=0;i<4;i++){
 			    for(int j=0;j<nBullets;j++){
-				    float phaseA = (float)j/nBullets;
+				    float phaseA = (float)i/nBullets + 0.25f*(float)j/nBullets;
 				    float thetaA = (phaseA * TAU * angleWidth) + TAU*offset;
 
-				    float phaseB = phaseA + 0.5f;
-				    float thetaB = (phaseB * TAU * angleWidth) + TAU*offset;
+				    float thetaB = thetaA + (0.5f*TAU);
 
 				    Vector3 bulletPositionA = new Vector3(
 						    Mathf.Sin(thetaA)*mag, Mathf.Cos(thetaA)*mag, 0);
@@ -43,8 +42,8 @@ public class SpiralWavePattern : BulletPattern{
 			    }
 			    offset += 0.01625f;
 			}
+			yield return new WaitForSeconds(0.15f);
 			offset += 0.125f;
-			yield return new WaitForSeconds(0.2f);
 		}
 	}
 }

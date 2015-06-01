@@ -19,7 +19,7 @@ public class Powerup : MonoBehaviour{
                 "Main Camera").GetComponent<Camera>() as Camera;
         screenSize = mainCamera.ScreenToWorldPoint(new Vector3(
                     Screen.width,
-                    Screen.height, 0));
+                    Screen.height, 0)) * 0.8f;
         pattern = gameObject.AddComponent<SpiralWavePattern>();
         offscreen = new Vector3(2000, 2000, 0);
         transform.position = offscreen;
