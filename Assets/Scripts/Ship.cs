@@ -95,4 +95,16 @@ public class Ship : MonoBehaviour{
 		Debug.Log("Reset");
 		Application.LoadLevel("Game");
 	}
+
+	public void PowerupPattern(BulletPattern pattern){
+	    Weapon.PowerupPattern(pattern);
+	}
+
+	public void PowerupOn(){
+	    Weapon.PowerupOn();
+	}
+
+	public void PowerupOff(){
+	    Weapon.PowerupOff();
+	}
 }
