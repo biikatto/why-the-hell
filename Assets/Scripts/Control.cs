@@ -61,7 +61,7 @@ public class Control : MonoBehaviour{
 		for(int i=0;i<4;i++){
 			if(Input.GetButtonDown(inputList["Fire "+(i+1)] as string)){
 				// begin fire
-				weapon.BeginFire(i);
+				weapon.BeginFire(i, player2);
 				movement.Firing(weapon.Firing);
 				buttonsDownThisFrame++;
 				continue;
