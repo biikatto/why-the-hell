@@ -7,14 +7,12 @@ public class Powerup : MonoBehaviour{
     private BulletPattern pattern;
     private bool ready;
 
-    public float respawnTime;
-    public float powerupTime;
+    public float respawnTime = 10f;
+    public float powerupTime = 4f;
 
     public void Start(){
         Debug.Log("foo");
         ready = false;
-        respawnTime = 10.0f;
-        powerupTime = 4.0f;
         Camera mainCamera = GameObject.Find(
                 "Main Camera").GetComponent<Camera>() as Camera;
         screenSize = mainCamera.ScreenToWorldPoint(new Vector3(
