@@ -25,7 +25,7 @@ public class Weapon : MonoBehaviour{
 	}
 	private bool readyToFire;
 	private int buttonsDown;
-	
+
 	private int patternNumber;
 	public int PatternNumber{
 		get{return patternNumber;}
@@ -36,6 +36,9 @@ public class Weapon : MonoBehaviour{
 	private BulletPattern spiralPattern;
 	private BulletPattern eightLinePattern;
 	private BulletPattern threeByFivePattern;
+
+	private BulletPattern powerupPattern;
+	private Coroutine powerupCoroutine;
 
 	private List<BulletPattern> patterns;
 
@@ -123,5 +126,28 @@ public class Weapon : MonoBehaviour{
 	}
 
 	public void Update(){
+	}
+
+	public void PowerupPattern(BulletPattern pattern){
+        powerupPattern = pattern;
+        powerupPattern.transform.parent = transform;
+        powerupPattern.bulletSpeed = bulletSpeed * 1.3f;
+        powerupPattern.bullet = bullet;
+	}
+
+	public void PowerupOn(){
+	    _EndFire();
+	    _EndFire();
+	    _EndFire();
+	    powerupCoroutine = StartCoroutine(powerupPattern.Fire());
+	    readyToFire = false;
+	}
+
+	public void PowerupOff(){
+	    StopCoroutine(powerupCoroutine);
+	    _EndFire();
+	    _EndFire();
+	    _EndFire();
+	    readyToFire = true;
 	}
 }
